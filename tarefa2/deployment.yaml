@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: custom-deployment
+  labels:
+    app: alpine-info
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: alpine-info
+  template:
+    metadata:
+      labels:
+        app: alpine-info
+    spec:
+      containers:
+      - name: alpine-info
+        image: eduardoschulz/alpine-info-server:latest
+        ports:
+        - containerPort: 8080
+

@@ -1,47 +1,70 @@
-# 🚀 Tarefa 2 — Cluster Kubernetes com Imagem Customizada
-## 📋 Descrição
 
-1. **Fazer deployment de um app no cluster usando yaml**
-2. **Identificar em que node está sendo executado**
-3. **Deixar o node acima indisponível**
-4. **Observar o comportamento da aplicação, ver para qual node ela foi alocada**
-5. **Restabelecer o node**
+# 🚀 Tarefa 3 — Gerenciamento de Pods e Nodes em Cluster Kubernetes
+
+## 📋 Descrição das Etapas
+
+1. **Realizar o deployment de um aplicativo no cluster usando YAML**
+2. **Identificar em qual node o pod está sendo executado**
+3. **Tornar o node indisponível**
+4. **Observar o comportamento da aplicação e o realocamento dos pods**
+5. **Restabelecer o node original**
 
 ---
 
 ## 📁 Estrutura de Diretórios
 
 ```
-├── cluster.yaml  #Arquivos de configuração do cluster e do deployment
-└── deployment.yaml
+.
+├── cluster.yaml        # Configuração do cluster KIND
+├── deployment.yaml     # Arquivo de deployment do app
 ```
 
 ---
-### 📦 Fazer deployment no cluster
+
+## 🧱 1. Subir o Cluster e Aplicar o Deployment
 
 ```bash
-kind create cluster --config=cluster.yaml #para subir o cluster
-kubectl apply -f src/deployment.yaml #para subir o deployment
+kind create cluster --config=cluster.yaml
+kubectl apply -f deployment.yaml
 ```
 
-### Identificar em que node está sendo executado
-```bash
-kubectl get pod deployment-grafa-* -o wide
-```
-
-### Deixar o node acima indisponível
-```bash
-kubectl cordon cluster-esr-worker2 #vai tirar ele do scheduling, ou seja, nao vai receber mais deployments
-kubectl drain cluster-esr-worker2 --ignore-daemonsets #vai drenar os pods restantes do node
-```
-
-### Observar o comportamento da aplicação, ver para qual node ela foi alocada
-```bash
-kubectl get pod deployment-grafa-* -o wide
-```
-### Restabelecer o node
-```bash
-kubectl uncordon cluster-esr-worker2
-```
 ---
 
+## 🔍 2. Verificar em Qual Node o Pod Está Rodando
+
+```bash
+kubectl get pods -o wide
+```
+
+> 🔎 Identifique o nome do pod (`deployment-grafa-*`) e observe a coluna **NODE**.
+
+---
+
+## 🚫 3. Tornar o Node Indisponível
+
+Substitua `<nome-do-node>` pelo node identificado no passo anterior.
+
+```bash
+kubectl cordon <nome-do-node>
+kubectl drain <nome-do-node> --ignore-daemonsets
+```
+
+---
+
+## 👀 4. Observar o Comportamento da Aplicação
+
+Verifique novamente onde o pod foi alocado:
+
+```bash
+kubectl get pods -o wide
+```
+
+> O pod deve ser reprogramado automaticamente para outro node disponível.
+
+---
+
+## ♻️ 5. Restabelecer o Node
+
+```bash
+kubectl uncordon <nome-do-node>
+```

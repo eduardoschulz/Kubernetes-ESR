@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: troubleshooting
+  labels:
+    app: TroubleShooting
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: TroubleShooting
+  template:
+    metadata:
+      labels:
+        app: TroubleShooting
+    spec:
+      containers:
+      - name: alpine-info
+        image: eduardoschulz/alpine-info-server:latest
+        ports:
+        - containerPort: 8080
+

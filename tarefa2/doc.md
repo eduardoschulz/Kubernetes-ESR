@@ -33,7 +33,7 @@ docker push eduardoschulz/alpine-info-server:latest
 
 ```bash
 kind create cluster --config=cluster.yaml #para subir o cluster
-kubectl apply -f src/deployment.yaml #para subir o deployment
+kubectl apply -f src/alpine-info.yaml #para subir o deployment
 ```
 
 ---

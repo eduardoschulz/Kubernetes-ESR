@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-apache
+  labels:
+    app: apache
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+        critical: "true"
+        hardware: high
+    spec:
+      nodeSelector:
+        hardware: high
+      tolerations:
+        - key: "critical"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      containers:
+      - name: apache
+        image: httpd:latest
+        ports:
+        - containerPort: 8000
+

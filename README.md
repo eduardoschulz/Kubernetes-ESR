@@ -6,4 +6,4 @@ Repositório com arquivos YAML utilizados nas atividades do curso de Kubernetes 
 - [Tarefa 3](./tarefa3/doc.md)
 - [Tarefa 4](./tarefa4/doc.md)
 - [Tarefa 5](./tarefa5/doc.md)
-- [Tarefa 6](./tarefa7/doc.md)
+- [Tarefa 6](./tarefa6/doc.md)

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tarefa5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-deployment
+  namespace: tarefa5
+  labels:
+    app: echo
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo
+        image: hashicorp/http-echo:1.0
+        args:
+          - "-text=Hello from replica"
+        ports:
+        - containerPort: 5678
+

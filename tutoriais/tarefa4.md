@@ -1,47 +1,68 @@
-# 🚀 Tarefa 2 — Cluster Kubernetes com Imagem Customizada
-## 📋 Descrição
+# 🚀 Tarefa 4 - Taints e Constraints 
+## 📋 Descrição da Tarefa
 
-1. **Fazer deployment de um app no cluster usando yaml**
-2. **Identificar em que node está sendo executado**
-3. **Deixar o node acima indisponível**
-4. **Observar o comportamento da aplicação, ver para qual node ela foi alocada**
-5. **Restabelecer o node**
+Esta tarefa consiste em provisionar um cluster Kubernetes com os seguintes requisitos:
+
+* **3 nós *worker* com hardware de baixa performance (*low*)**
+* **2 nós *worker* com hardware de alta performance (*high*)**
+
+Distribuição de serviços:
+
+* **Nginx** será executado nos nós *low*
+* **Apache** será executado nos nós *high*
 
 ---
 
 ## 📁 Estrutura de Diretórios
 
 ```
-├── cluster.yaml  #Arquivos de configuração do cluster e do deployment
-└── deployment.yaml
+├── cluster.yaml      # Configuração do cluster KIND
+└── deployment.yaml   # Manifesto para o deployment dos serviços
 ```
 
 ---
-### 📦 Fazer deployment no cluster
+
+## ⚙️ Provisionamento e Configuração do Cluster
+
+### Criar o Cluster
 
 ```bash
-kind create cluster --config=cluster.yaml #para subir o cluster
-kubectl apply -f src/deployment.yaml #para subir o deployment
+kind create cluster --config=kind/tarefa4.yaml
 ```
 
-### Identificar em que node está sendo executado
+### Verificar os Nós
+
 ```bash
-kubectl get pod deployment-grafa-* -o wide
+kubectl get nodes
 ```
 
-### Deixar o node acima indisponível
-```bash
-kubectl cordon cluster-esr-worker2 #vai tirar ele do scheduling, ou seja, nao vai receber mais deployments
-kubectl drain cluster-esr-worker2 --ignore-daemonsets #vai drenar os pods restantes do node
-```
-
-### Observar o comportamento da aplicação, ver para qual node ela foi alocada
-```bash
-kubectl get pod deployment-grafa-* -o wide
-```
-### Restabelecer o node
-```bash
-kubectl uncordon cluster-esr-worker2
-```
 ---
+
+## 🏷️ Rotulagem dos Nós
+
+### Atribuir rótulos aos nós de hardware *low*
+
+```bash
+kubectl label node cluster-esr-worker hardware=low nodepool=low
+kubectl label node cluster-esr-worker2 hardware=low nodepool=low
+kubectl label node cluster-esr-worker3 hardware=low nodepool=low
+```
+
+### Atribuir rótulos aos nós de hardware *high*
+
+```bash
+kubectl label node cluster-esr-worker4 hardware=high nodepool=high
+kubectl label node cluster-esr-worker5 hardware=high nodepool=high
+```
+
+---
+
+## 🚫 Aplicar *Taints* aos Nós *High*
+
+```bash
+kubectl taint node cluster-esr-worker4 critical=true:NoSchedule
+kubectl taint node cluster-esr-worker5 critical=true:NoSchedule
+```
+
+> ℹ️ Os taints garantem que apenas pods com a devida tolerância sejam agendados nesses nós. Isso assegura que recursos críticos estejam reservados para workloads específicas.
 
